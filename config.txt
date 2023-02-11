@@ -1,0 +1,4 @@
+[default]
+debug = True
+interval = 5
+prefetch_max_size = 5
