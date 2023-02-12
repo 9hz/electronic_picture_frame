@@ -17,6 +17,7 @@ from frame_ui import FrameUI
 def timer_task():
     while True:
         config.load_config()
+        hr.check_and_report()
         if ui.should_add_prefetch_image():
             path = manager.pick_image()
             ui.add_prefetch_image(path)
@@ -27,7 +28,7 @@ if __name__ == '__main__':
     config = Config()
     ui = FrameUI(config)
     manager = ImageManager(ui.width, ui.height)
-    HourReporting()
+    hr = HourReporting()
     timer_thread = threading.Thread(target=timer_task)
     timer_thread.start()
     ui.start()

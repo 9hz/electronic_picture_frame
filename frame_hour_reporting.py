@@ -8,7 +8,6 @@
 import collections
 import datetime
 import os
-import platform
 import random
 import pygame
 
@@ -23,7 +22,8 @@ def play_mp3(path):
         pygame.mixer.music.load(path)
         # https://www.pygame.org/docs/ref/music.html
         pygame.mixer.music.play(loops=0, start=0.0, fade_ms=0)
-    except:
+    except Exception as e:
+        print(e)
         pass
 
 
@@ -31,14 +31,10 @@ class HourReporting:
     def __init__(self):
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
         self.clock_dir = f'{self.current_dir}/hour_reporting'
-        self.clock_mp3 = collections.defaultdict(list)
+        self.clock_mp3 = collections.defaultdict(set)
         self.last_play_clock_time = 0
-        # macOS: Cannot Use Tkinter With Pygame
-        # This is a well-known limitation in TkInter with PyGame
-        # https://github.com/pygame/pygame/issues/2639
-        # https://docs.python.org/3/library/platform.html
-        if platform.system() != 'Darwin':
-            pygame.init()
+        self.scan_clock_mp3()
+        pygame.init()
 
     def scan_clock_mp3(self):
         for i in range(24):
@@ -46,7 +42,7 @@ class HourReporting:
             os.makedirs(target_dir, exist_ok=True)
             for file in os.listdir(target_dir):
                 if file.endswith('.mp3'):
-                    self.clock_mp3[i].append(f'{self.clock_dir}/{file}')
+                    self.clock_mp3[i].add(f'{self.clock_dir}/{i:02}/{file}')
 
     def check_and_report(self):
         current = datetime.datetime.now()
@@ -60,5 +56,6 @@ class HourReporting:
             # Non-working day: 9am to 11pm
             if (0 <= weekday <= 4 and 7 <= hour <= 23) or (5 <= weekday <= 6 and 9 <= hour <= 23):
                 if minute == 0 and 0 <= second <= 2:
-                    play_mp3(random.choice(self.clock_mp3[hour]))
+                    play_mp3(random.choice(list(self.clock_mp3[hour])))
                     self.last_play_clock_time = current_time
+                    self.scan_clock_mp3()
