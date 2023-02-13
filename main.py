@@ -5,6 +5,7 @@
 @contact: ghz65535@163.com
 @time: 2023-02-09
 """
+import platform
 import threading
 import time
 
@@ -26,9 +27,18 @@ def timer_task():
 
 if __name__ == '__main__':
     config = Config()
-    ui = FrameUI(config)
+    if platform.system() == 'Linux':
+        # Ubuntu: pygame.init() should put first
+        hr = HourReporting()
+        ui = FrameUI(config)
+    elif platform.system() == 'Darwin':
+        # macOS: tk.Tk() should put first
+        ui = FrameUI(config)
+        hr = HourReporting()
+    else:
+        hr = HourReporting()
+        ui = FrameUI(config)
     manager = ImageManager(ui.width, ui.height)
-    hr = HourReporting()
     timer_thread = threading.Thread(target=timer_task)
     timer_thread.start()
     ui.start()
