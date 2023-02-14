@@ -14,9 +14,19 @@ Please run with Python3.
 ```
 pip install -r requirements.txt
 python main.py
+
 # copy your pictures to the images/ folder
 # use your own voice for hour reporting
 # copy xxx.mp3 to hour_reporting/08/, hour_reporting/09/, etc
+
+# don't forget to change parameters in config.txt
+debug = False  # means full screen
+interval = 60  # time interval for switching pictures
+
+# raspberry pi auto start
+# https://www.paulligocki.com/how-to-auto-start-applications-in-raspberry-pi-os/
+# change /your/project/path/main.py in electronic_picture_frame.desktop,
+# then copy it to ~/.config/autostart
 ```
 
 ## Code Structure

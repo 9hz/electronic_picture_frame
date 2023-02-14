@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=Electronic Picture Frame
+Exec=/usr/bin/python /your/project/path/main.py
+Type=Application
